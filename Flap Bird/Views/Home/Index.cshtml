@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        canvas {
+            border: 1px solid #d3d3d3;
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body onload="startGame()">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <div id="gameArea"></div>
+            </div>
+        </div>
+    </div>
+    <div class="hidden">
+        <img id="bird" src="~/Img/Flappy1.png" />
+        <img id="pipe1" src="~/Img/Pipe3_trans.png" />
+        <img id="pipe2" src="~/Img/Pipe4_trans .png"/>
+    </div>
+    <script src="~/Scripts/Flap/GameScript.js"></script>
+    <br>
+    <button onmousedown="accelerate(-0.2)" onmouseup="accelerate(0.05)">ACCELERATE</button>
+
+    <!-- <p>Use the ACCELERATE button to stay in the air</p>
+    <p>How long can you stay alive?</p> -->
+</body>
+</html>

@@ -1,6 +1,7 @@
 ﻿var myGamePiece;
 var myObstacles = [];
 var myNewObstacles = [];
+var hitBoxes = [];
 var myScore;
 var bird = document.getElementById("bird");
 var pipe1 = document.getElementById("pipe1");
@@ -10,8 +11,10 @@ var gameArea;
 function startGame() {
     myGamePiece = new component(30, 30, 100, 245, "runner",0);
     myGamePiece.gravity = 0.05;
+
     myScore = new component("30px", "Consolas", 280, 40, "text",0);
     myGameArea.start();
+
     document.addEventListener("keydown", test);
     document.addEventListener("keyup", test2);
 }

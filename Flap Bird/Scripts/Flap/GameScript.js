@@ -9,10 +9,13 @@ var pipe2 = document.getElementById("pipe2");
 var gameArea;
 
 function startGame() {
-    myGamePiece = new component(30, 30, 100, 245, "runner",0);
+    var CollisionBoxes = [];
+    CollisionBoxes =[new CollisionBox(11, 1, 10, 25)];
+
+    myGamePiece = new component(30, 30, 100, 245, "runner", 0, CollisionBoxes);
     myGamePiece.gravity = 0.05;
 
-    myScore = new component("30px", "Consolas", 280, 40, "text",0);
+    myScore = new component("30px", "Consolas", 280, 40, "text", 0);
     myGameArea.start();
 
     document.addEventListener("keydown", test);
@@ -29,6 +32,13 @@ function test(e) {
     if (e.key === 'ArrowDown') {
         myGamePiece.status = 'duck';
     }
+}
+
+function CollisionBox(x, y, w, h) {
+    this.x = x;
+    this.y = y;
+    this.width = w;
+    this.height = h;
 }
 
 function test2(e) {
@@ -67,7 +77,7 @@ var myGameArea = {
     }
 };
 
-function component(width, height, x, y, type, rotation) {
+function component(width, height, x, y, type, rotation,hitboxes) {
 
     this.type = type;
     this.score = 0;
@@ -82,6 +92,8 @@ function component(width, height, x, y, type, rotation) {
     this.rotation = rotation;
     this.status = 'running';
     this.remove = false;
+    this.hitboxes = hitboxes;
+    this.image = "";
     var colors = ['black', 'red', 'green', 'blue', 'orange', 'pink', 'navy', 'mistyrose', 'blueviolet'];
     //this.color = colors[color];
 
@@ -107,22 +119,41 @@ function component(width, height, x, y, type, rotation) {
                     this.height = 15;
                 }
                 ctx.drawImage(bird, this.x, this.y, this.width, this.height);
+                //ctx.moveTo(this.x, this.y);
+                //ctx.lineTo(0, 0);
+                //ctx.stroke;
+                //ctx.strokeStyle = "blue";
+                //ctx.strokeRect(this.x + this.hitboxes[0].x, this.y + this.hitboxes[0].y, this.hitboxes[0].width, this.hitboxes[0].height);
+                //var c = document.getElementById("myCanvas");
+                //var ctx = c.getContext("2d");
+                //ctx.moveTo(0, 0);
+                //ctx.lineTo(200, 100);
+                //ctx.stroke();
+                this.hitboxes = [new CollisionBox(11, 1, 10, 25)];
             }
             else {
                 ctx.save();
 
                 if (this.rotation === 1) {
-                    //ctx.drawImage(pipe1, 3, 3, 32, 132);
-                    ctx.drawImage(pipe2, this.x, this.y, this.width, this.height);
+                    this.image = pipe2;
+                    //ctx.drawImage(pipe2, this.x, this.y, this.width, this.height);
                 }
                 else {
-                    ctx.drawImage(pipe1, this.x, this.y, this.width, this.height);
+                    this.image = pipe1;
                 }
 
+                ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+                
+            }
+
+            ctx.strokeStyle = "blue";
+
+            var i;//Draws the hitboxes around the object
+            for (i = 0; i < this.hitboxes.length; i++) {
+                ctx.strokeRect(this.x + this.hitboxes[0].x, this.y + this.hitboxes[0].y, this.hitboxes[i].width, this.hitboxes[i].height);
+                ctx.stroke();
             }
         }
-
-        
     };
     this.newPos = function () {
         this.gravitySpeed += this.gravity;
@@ -138,21 +169,45 @@ function component(width, height, x, y, type, rotation) {
         }
     };
     this.crashWith = function (otherobj) {
-        var myleft = this.x;
-        var myright = this.x + this.width;
-        var mytop = this.y;
-        var mybottom = this.y + this.height;
-
-        var otherleft = otherobj.x;
-        var otherright = otherobj.x + (otherobj.width);
-        var othertop = otherobj.y;
-        var otherbottom = otherobj.y + (otherobj.height);
-
         var crash = true;
-        if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) {
-            crash = false;
-        }
 
+        var i;
+        for (i = 0; i < this.hitboxes.length; i++) {
+            var myleft = this.x + this.hitboxes[i].x;
+            var myright = this.x + this.hitboxes[i].x + this.hitboxes[i].width;
+            var mytop = this.y + this.hitboxes[i].y;
+            var mybottom = this.y + this.hitboxes[i].y + this.hitboxes[i].height;
+
+            var x;
+            for (x = 0; x < otherobj.hitboxes.length; x++) {
+                var otherleft = otherobj.x + otherobj.hitboxes[x].x;
+                var otherright = otherobj.x + otherobj.hitboxes[x].x + otherobj.hitboxes[x].width;
+                var othertop = otherobj.y + otherobj.hitboxes[x].y;
+                var otherbottom = otherobj.y + otherobj.hitboxes[x].y + otherobj.hitboxes[x].height;
+
+                if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) {
+                    crash = false;
+                }
+            }
+        }
+        //var myleft = this.x;
+        //var myright = this.x + this.width;
+        //var mytop = this.y;
+        //var mybottom = this.y + this.height;
+
+        //var otherleft = otherobj.x;
+        //var otherright = otherobj.x + (otherobj.width);
+        //var othertop = otherobj.y;
+        //var otherbottom = otherobj.y + (otherobj.height);
+
+        //var crash = true;
+        //if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) {
+        //    crash = false;
+        //}
+
+        //if (crash) {
+        //    console.log("Test");
+        //}
 
         return crash;
     };
@@ -175,11 +230,6 @@ function updateGameArea() {
         minHeight = 42;
         maxHeight = 200;
 
-        //defH2 = myGameArea.canvas.height - 132;
-        //defH1 = -Math.abs(myGameArea.canvas.height / 2);
-
-
-        //height = Math.floor(Math.random(maxHeight,minHeight) * (maxHeight - minHeight + 1) + minHeight);
         height = myGameArea.canvas.height;
 
         minGap = 45;
@@ -187,7 +237,6 @@ function updateGameArea() {
 
         gap = Math.floor(Math.random() * maxGap) + minGap;
 
-        //defH1 = myGameArea.canvas.height - 325;
         var a;
 
         a = height - 42;
@@ -202,21 +251,13 @@ function updateGameArea() {
         pos = -Math.abs(pos);
         defH1 = pos;
 
-        //defH2 = pos;
+        var collisionBox1 = [];
+        var collisionBox2 = [];
+        collisionBox1 = [new CollisionBox(0, 0, 32, 325)];
+        collisionBox2 = [new CollisionBox(0, 0, 32, 325)];
 
-        //defH1 -= 325;
-        //defH1 = -Math.abs(defH1);
-
-        //defH2 = myGameArea.canvas.height;
-        //defH2 += gap;
-        //pos = Math.floor(Math.random() * myGameArea.canvas.height) + 1;
-        //pos += gap;
-        //pos = -Math.abs(pos);
-
-        //color = Math.floor(Math.random() * 10);
-
-        myObstacles.push(new component(32, 325, x, defH1, "", 1));
-        myObstacles.push(new component(32, 325, x, defH2,"",2));
+        myObstacles.push(new component(32, 325, x, defH1, "", 1, collisionBox1));
+        myObstacles.push(new component(32, 325, x, defH2, "", 2, collisionBox2));
     }
 
     var count = 0;
@@ -226,8 +267,6 @@ function updateGameArea() {
         if (myObstacles[i].x + myObstacles[i].width < 0) {
             myNewObstacles[count] = i;
             count++;
-            //console.log('OOB');
-            //myObstacles.remove(i);
 
         }
     }

@@ -10,8 +10,15 @@ var gameArea;
 
 function startGame() {
     var CollisionBoxes = [];
-    CollisionBoxes =[new CollisionBox(11, 1, 10, 25)];
-
+    CollisionBoxes = [new CollisionBox(12, 1, 10, 25),
+        new CollisionBox(0, 9, 26, 8),
+        new CollisionBox(6, 5, 19, 5),
+        new CollisionBox(4, 19, 23, 5),
+        new CollisionBox(7, 3, 5, 5),
+        new CollisionBox(6, 21, 20, 5),
+        new CollisionBox(10, 24, 7, 5),
+        new CollisionBox(28, 18, 1, 1)];
+    //CollisionBoxes = [new CollisionBox(28, 18, 1, 1)];
     myGamePiece = new component(30, 30, 100, 245, "runner", 0, CollisionBoxes);
     myGamePiece.gravity = 0.05;
 
@@ -32,7 +39,9 @@ function test(e) {
     if (e.key === 'ArrowDown') {
         myGamePiece.status = 'duck';
     }
+
 }
+
 
 function CollisionBox(x, y, w, h) {
     this.x = x;
@@ -111,6 +120,11 @@ function component(width, height, x, y, type, rotation,hitboxes) {
         else {
             if (this.type === 'runner') {
                 //this.width = 15;
+                
+                //var CollisionBoxes = [];
+                //CollisionBoxes = [new CollisionBox(12, 1, 10, 25),
+                //    new CollisionBox(0, 9, 26, 8)];
+                //this.hitboxes = CollisionBoxes;
 
                 if (this.status === 'running') {
                     this.height = 30;
@@ -119,6 +133,8 @@ function component(width, height, x, y, type, rotation,hitboxes) {
                     this.height = 15;
                 }
                 ctx.drawImage(bird, this.x, this.y, this.width, this.height);
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = "blue";
                 //ctx.moveTo(this.x, this.y);
                 //ctx.lineTo(0, 0);
                 //ctx.stroke;
@@ -129,11 +145,11 @@ function component(width, height, x, y, type, rotation,hitboxes) {
                 //ctx.moveTo(0, 0);
                 //ctx.lineTo(200, 100);
                 //ctx.stroke();
-                this.hitboxes = [new CollisionBox(11, 1, 10, 25)];
+                //this.hitboxes = [new CollisionBox(11, 1, 10, 25),new CollisionBox(0,9,26,8)];
             }
             else {
                 ctx.save();
-
+                
                 if (this.rotation === 1) {
                     this.image = pipe2;
                     //ctx.drawImage(pipe2, this.x, this.y, this.width, this.height);
@@ -143,16 +159,16 @@ function component(width, height, x, y, type, rotation,hitboxes) {
                 }
 
                 ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-                
+                ctx.strokeStyle = 'red';
             }
 
-            ctx.strokeStyle = "blue";
+            
 
-            var i;//Draws the hitboxes around the object
-            for (i = 0; i < this.hitboxes.length; i++) {
-                ctx.strokeRect(this.x + this.hitboxes[0].x, this.y + this.hitboxes[0].y, this.hitboxes[i].width, this.hitboxes[i].height);
-                ctx.stroke();
-            }
+            //var i;//Draws the hitboxes around the object
+            //for (i = 0; i < this.hitboxes.length; i++) {
+            //    ctx.strokeRect(this.x + this.hitboxes[i].x, this.y + this.hitboxes[i].y, this.hitboxes[i].width, this.hitboxes[i].height);
+            //    ctx.stroke();
+            //}
         }
     };
     this.newPos = function () {
@@ -169,25 +185,47 @@ function component(width, height, x, y, type, rotation,hitboxes) {
         }
     };
     this.crashWith = function (otherobj) {
-        var crash = true;
+        var crash = false;
 
         var i;
         for (i = 0; i < this.hitboxes.length; i++) {
-            var myleft = this.x + this.hitboxes[i].x;
-            var myright = this.x + this.hitboxes[i].x + this.hitboxes[i].width;
-            var mytop = this.y + this.hitboxes[i].y;
-            var mybottom = this.y + this.hitboxes[i].y + this.hitboxes[i].height;
+            var rectA = {
+                left: this.x + this.hitboxes[i].x,
+                top: this.y + this.hitboxes[i].y,
+                right: this.x + this.hitboxes[i].x + this.hitboxes[i].width,
+                bottom: this.y + this.hitboxes[i].y + this.hitboxes[i].height
+            };
+            //var myleft = this.x + this.hitboxes[i].x;
+            //var myright = this.x + this.hitboxes[i].x + this.hitboxes[i].width;
+            //var mytop = this.y + this.hitboxes[i].y;
+            //var mybottom = this.y + this.hitboxes[i].y + this.hitboxes[i].height;
+            //var topLeft = this.x + this.hitboxes[i].x;
+            //var bottomRight = this.x + hitboxes[i].x + this.y + hitboxes[i].height + hitboxes[i].width;
+            if (crash) { break; }
 
             var x;
             for (x = 0; x < otherobj.hitboxes.length; x++) {
-                var otherleft = otherobj.x + otherobj.hitboxes[x].x;
-                var otherright = otherobj.x + otherobj.hitboxes[x].x + otherobj.hitboxes[x].width;
-                var othertop = otherobj.y + otherobj.hitboxes[x].y;
-                var otherbottom = otherobj.y + otherobj.hitboxes[x].y + otherobj.hitboxes[x].height;
+                var rectB = {
+                    left: otherobj.x + otherobj.hitboxes[x].x,
+                    top: otherobj.y + otherobj.hitboxes[x].y,
+                    right: otherobj.x + otherobj.hitboxes[x].x + otherobj.hitboxes[x].width,
+                    bottom: otherobj.y + otherobj.hitboxes[x].y + otherobj.hitboxes[x].height
+                };
+                //var otherleft = otherobj.x + otherobj.hitboxes[x].x;
+                //var otherright = otherobj.x + otherobj.hitboxes[x].x + otherobj.hitboxes[x].width;
+                //var othertop = otherobj.y + otherobj.hitboxes[x].y;
+                //var otherbottom = otherobj.y + otherobj.hitboxes[x].y + otherobj.hitboxes[x].height;
+                //var otherTopLeft = otherobj.x + otherobj.hitboxes[x].x;
+                //var otherBottomRight = otherobj.x + otherobj.hitboxes[x].x + otherobj.y + otherobj.hitboxes[x].height + otherobj.hitboxes[x].width;
 
-                if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) {
-                    crash = false;
+                if (intersectRect(rectA, rectB)) {
+                    crash = true;
+                    break;
                 }
+
+                //if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) {
+                //    crash = false;
+                //}
             }
         }
         //var myleft = this.x;
@@ -211,6 +249,13 @@ function component(width, height, x, y, type, rotation,hitboxes) {
 
         return crash;
     };
+}
+
+function intersectRect(r1, r2) {
+    return !(r2.left > r1.right ||
+        r2.right < r1.left ||
+        r2.top > r1.bottom ||
+        r2.bottom < r1.top);
 }
 
 function updateGameArea() {

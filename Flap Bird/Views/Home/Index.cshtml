@@ -12,15 +12,22 @@
 <body onload="startGame()">
     <div class="container">
         <div class="row">
-            <div class="col-sm-12 col-md-12 col-lg-12">
+            <div class="col-sm-12 col-md-12 col-lg-12" style="padding-top:15px;">
                 <div id="gameArea"></div>
             </div>
         </div>
+    </div>
+    <div class="hidden" id="gameOver">
+        <p>Game Over</p>
+        <button onmousedown="myGameArea.startOver()">Retry?</button>
+        <button onmousedown="">Quit</button>
     </div>
     <div class="hidden">
         <img id="bird" src="~/Img/Flappy1.png" />
         <img id="pipe1" src="~/Img/Pipe3_trans.png" />
         <img id="pipe2" src="~/Img/Pipe4_trans .png"/>
+        <img id="backgroundImg" src="~/Img/BG2.png" />
+        <img id="floorImg" src="~/Img/Floor1.png" />
     </div>
     <script src="~/Scripts/Flap/GameScript.js"></script>
     <br>

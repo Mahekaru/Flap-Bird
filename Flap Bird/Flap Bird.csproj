@@ -93,7 +93,9 @@
     <Content Include="Content\Site.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Img\BG2.png" />
     <Content Include="Img\Flappy1.png" />
+    <Content Include="Img\Floor1.png" />
     <Content Include="Img\Pipe.png" />
     <Content Include="Img\Pipe1.png" />
     <Content Include="Img\Pipe1_trans.png" />

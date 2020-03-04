@@ -1,0 +1,19 @@
+﻿body {
+    background-color: lightgreen;
+}
+
+@media only screen and (max-width: 600px) {
+    body {
+        background-color: lightblue;
+    }
+}
+
+@media only screen and (orientation: landscape) {
+    title {
+        display: none;
+    }
+
+    body {
+        background-color: pink;
+    }
+}

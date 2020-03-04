@@ -4,6 +4,8 @@ var myNewObstacles = [];
 var hitBoxes = [];
 var myScore;
 var bird = document.getElementById("bird");
+var bird2 = document.getElementById("bird2");
+var player;
 var background = document.getElementById("backgroundImg");
 var floor = document.getElementById("floorImg");
 var pipe1 = document.getElementById("pipe1");
@@ -14,43 +16,37 @@ var key = 0;
 
 function startGame() {
     var CollisionBoxes = [];
-    CollisionBoxes = [new CollisionBox(12, 1, 10, 25),
-        new CollisionBox(0, 9, 26, 8),
-        new CollisionBox(6, 5, 19, 5),
-        new CollisionBox(4, 19, 23, 5),
-        new CollisionBox(7, 3, 5, 5),
-        new CollisionBox(6, 21, 20, 5),
-        new CollisionBox(10, 24, 7, 5),
-        new CollisionBox(28, 18, 1, 1)];
+    CollisionBoxes = [new CollisionBox(7, 1, 10, 5),
+    new CollisionBox(5, 4, 16, 5),
+    new CollisionBox(2, 6, 19, 8),
+    new CollisionBox(1, 8, 5, 5),
+    new CollisionBox(4, 15, 19, 2),
+    new CollisionBox(5, 17, 16, 2),
+    new CollisionBox(8, 19, 6, 2),
+    new CollisionBox(23, 13, 1, 1)];
 
+    player = bird;
     //CollisionBoxes = [new CollisionBox(28, 18, 1, 1)];
-    myGamePiece = new component(30, 30, 100, 122, "runner", 0, CollisionBoxes);
+    myGamePiece = new component(25, 22, 100, 50, "runner", 0, CollisionBoxes);
     myGamePiece.gravity = 0.05;
-
-    myScore = new component("30px", "Consolas", 280, 40, "text", 0);
+    myGamePiece.gravitySpeed = 0.50;
+    //280
+    myScore = new component("15px", "Consolas", 15, 15, "text", 0);
     myGameArea.start();
 
     document.addEventListener("keydown", test);
     document.addEventListener("keyup", test2);
-    
+
+    //document.addEventListener("mousedown", test);
+    //document.addEventListener("mouseup", test2);
+
+    document.addEventListener('touchstart', test);
+    document.addEventListener('touchend', test2);
+    //this.containerEl.addEventListener(Runner.events.TOUCHSTART, this)
 }
 
-function test(e) {
 
-    //console.log('Down' + e);
-    if (e.key === 'ArrowUp') {
-        if (key === 0) {
-            accelerate(-0.2);
-            key = 1;
-        }
-        console.log(key);
-    }
 
-    //if (e.key === 'ArrowDown') {
-    //    myGamePiece.status = 'duck';
-    //}
-
-}
 
 
 function CollisionBox(x, y, w, h) {
@@ -60,14 +56,43 @@ function CollisionBox(x, y, w, h) {
     this.height = h;
 }
 
-function test2(e) {
-    //console.log('Release' + e);
+function test(e) {
+    console.log("Down " + e.buttons);
+    //console.log(e.button)
+    //console.log('Down' + e);
+    if (e.key === 'ArrowUp' || e.buttons === 1) {
+        console.log(key);
+        if (key === 0) {
+            accelerate(-0.2);
+            console.log("DOWN HIT");
+            key = 1;
+        }
+        //console.log(key);
+    }
 
-    if (e.key === 'ArrowUp') {
-        accelerate(0.05);
-        //accelerate(-0.2);
-        key = 0;
-        console.log (key);
+    //if (e.key === 'ArrowDown') {
+    //    myGamePiece.status = 'duck';
+    //}
+
+}
+
+function mouseClick(e) {
+    console.log("CLICK");
+    myGamePiece.Jumping = true;
+}
+
+function test2(e) {
+    console.log('UP ' + e.buttons);
+
+    if (e.key === 'ArrowUp' || e.buttons === 0) {
+        console.log(key);
+        if (key === 1) {
+            accelerate(0.05);
+            key = 0;
+            console.log("UP HIT");
+            console.log(key);
+        }
+
         //console.log(e);
     }
 
@@ -80,19 +105,21 @@ function test2(e) {
 var myGameArea = {
     gameArea: document.getElementById("gameArea"),
 
-    canvas: document.createElement("canvas"),
+    canvas: document.getElementById("canvas"),
     start: function () {
-        
-        this.canvas.width = 480;
-        this.canvas.height = 270;
-        this.canvas.style.width = "100%";
+
+        //this.canvas.width = "100%";
+        //this.canvas.height = "100%";
+        //this.canvas.style.width = "100%";
         this.context = this.canvas.getContext("2d");
-        this.gameArea.appendChild(this.canvas);
+        //this.gameArea.appendChild(this.canvas);
         //var ctx = this.canvas.getContext("2d");
         this.context.drawImage(background, 0, 0, this.canvas.width, this.canvas.height);
 
         this.frameNo = 0;
         this.interval = setInterval(updateGameArea, 20);
+        this.canvas.addEventListener('click', mouseClick);
+        //this.canvas.addEventListener('mouseup', test2);
     },
     clear: function () {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -100,11 +127,18 @@ var myGameArea = {
 
     },
     showFloor: function () {
-         //this.context.drawImage(floor, 0, 210, this.canvas.width, 122);
-        this.context.drawImage(floor, 0, 210, this.canvas.width, 122);
+        //this.context.drawImage(floor, 0, 210, this.canvas.width, 122);
+        this.context.drawImage(floor, 0, 117, this.canvas.width, 122);
+    },
+    gameOver: function () {
+        console.log("GAME OVER");
+        var nml = document.getElementById("gameOver");
+        nml.style.display = "";
     },
     startOver: function () {
         //myGamePiece = '';
+        var nml = document.getElementById("gameOver");
+        nml.style.display = "none";
         myObstacles = [];
         myNewObstacles = [];
         //hitBoxes = [];
@@ -119,12 +153,12 @@ var myGameArea = {
         myGamePiece.y = 122;
         crashed = false;
         myGamePiece.gravity = 0.05;
-        myGamePiece.gravitySpeed = 0.05;
+        myGamePiece.gravitySpeed = 0.50;
         //myGameArea.start();
     }
 };
 
-function component(width, height, x, y, type, rotation,hitboxes) {
+function component(width, height, x, y, type, rotation, hitboxes) {
 
     this.type = type;
     this.score = 0;
@@ -132,22 +166,24 @@ function component(width, height, x, y, type, rotation,hitboxes) {
     this.height = height;
     this.speedX = 0;
     this.speedY = 0;
+    this.Jumping = false;
+    this.maxJump = -0.25;
     this.x = x;
     this.y = y;
     this.gravity = 0;
-    this.gravitySpeed = 0;
+    this.gravitySpeed = 1;
     this.rotation = rotation;
     this.status = 'running';
     this.remove = false;
     this.hitboxes = hitboxes;
     this.image = "";
-    var colors = ['black', 'red', 'green', 'blue', 'orange', 'pink', 'navy', 'mistyrose', 'blueviolet'];
+    //var colors = ['black', 'red', 'green', 'blue', 'orange', 'pink', 'navy', 'mistyrose', 'blueviolet'];
     //this.color = colors[color];
 
     this.update = function () {
         ctx = myGameArea.context;
 
-        switch(this.type){
+        switch (this.type) {
             case 'text':
                 ctx.font = this.width + " " + this.height;
                 ctx.fillStyle = "black";
@@ -156,9 +192,11 @@ function component(width, height, x, y, type, rotation,hitboxes) {
                 ctx.fillRect(this.x, this.y, this.width, this.height);
                 break;
             case 'runner':
-                ctx.drawImage(bird, this.x, this.y, this.width, this.height);
+                ctx.drawImage(player, this.x, this.y, this.width, this.height);
                 ctx.lineWidth = 2;
                 ctx.strokeStyle = "blue";
+
+                //this.hitboxes = hitboxes;
                 break;
             case 'pipe':
                 ctx.save();
@@ -175,24 +213,39 @@ function component(width, height, x, y, type, rotation,hitboxes) {
                 ctx.strokeStyle = 'red';
                 break;
             case 'floor':
-                //ctx.drawImage(floor, 0, 210, myGameArea.canvas.width, 122);
+                ctx.drawImage(floor, this.x, this.y, myGameArea.canvas.width, 5);
                 ctx.strokeStyle = 'red';
                 break;
-
         }
-        if (this.type !== 'text') {
-            var i;//Draws the hitboxes around the object
-            for (i = 0; i < this.hitboxes.length; i++) {
-                ctx.strokeRect(this.x + this.hitboxes[i].x, this.y + this.hitboxes[i].y, this.hitboxes[i].width, this.hitboxes[i].height);
-                ctx.stroke();
-            }
-        }
+        //if (this.type !== 'text') {
+        //    var i;//Draws the hitboxes around the object
+        //    for (i = 0; i < this.hitboxes.length; i++) {
+        //        ctx.strokeRect(this.x + this.hitboxes[i].x, this.y + this.hitboxes[i].y, this.hitboxes[i].width, this.hitboxes[i].height);
+        //        ctx.stroke();
+        //    }
+        //}
     };
     this.newPos = function () {
         this.gravitySpeed += this.gravity;
         this.x += this.speedX;
         this.y += this.speedY + this.gravitySpeed;
-        //this.hitBottom();
+    };
+    this.isJumping = function () {
+        if (this.Jumping) {
+            if (this.gravity !== this.maxJump) {
+                this.gravity = Math.round((this.gravity - 0.05) * 100) / 100;
+                player = bird2;
+
+            }
+            else {
+                player = bird;
+                this.gravity = 0.05;
+                this.Jumping = false;
+            }
+
+            console.log("Gravity:      " + this.gravity);
+            console.log("GravitySpeed: " + this.gravitySpeed);
+        }
     };
     this.hitBottom = function () {
         var rockbottom = myGameArea.canvas.height - this.height;
@@ -212,7 +265,7 @@ function component(width, height, x, y, type, rotation,hitboxes) {
                 right: this.x + this.hitboxes[i].x + this.hitboxes[i].width,
                 bottom: this.y + this.hitboxes[i].y + this.hitboxes[i].height
             };
-        
+
             if (crash) { break; }
 
             var x;
@@ -234,7 +287,7 @@ function component(width, height, x, y, type, rotation,hitboxes) {
                 //}
             }
         }
-     
+
         return crash;
     };
 }
@@ -247,10 +300,11 @@ function intersectRect(r1, r2) {
 }
 
 function updateGameArea() {
-    var x,pos, height, gap, minHeight, maxHeight, minGap, maxGap, color,defH1,defH2;
+    var x, pos, height, gap, minHeight, maxHeight, minGap, maxGap, color, defH1, defH2;
     if (crashed === false) {
         for (i = 0; i < myObstacles.length; i += 1) {
             if (myGamePiece.crashWith(myObstacles[i])) {
+                myGameArea.gameOver();
                 document.getElementById("gameOver").classList.remove("hidden");
                 crashed = true;
                 return;
@@ -267,8 +321,8 @@ function updateGameArea() {
 
             height = myGameArea.canvas.height;
 
-            minGap = 45;
-            maxGap = 60;
+            minGap = 35;
+            maxGap = 40;
 
             gap = Math.floor(Math.random() * (maxGap - minGap + 1)) + minGap;
 
@@ -296,7 +350,7 @@ function updateGameArea() {
             myObstacles.push(new component(32, 325, x, defH1, "pipe", 1, collisionBox1));
             myObstacles.push(new component(32, 325, x, defH2, "pipe", 2, collisionBox2));
             if (myGameArea.frameNo === 1) {
-                myObstacles.push(new component(myGameArea.canvas.width, 122, 0, 210, "floor", 0, collisionBox3));
+                myObstacles.push(new component(myGameArea.canvas.width, 117, 0, 210, "floor", 0, collisionBox3));
             }
 
         }
@@ -318,10 +372,11 @@ function updateGameArea() {
         myScore.update();
 
         myGamePiece.newPos();
-        myGamePiece.update();
         myGameArea.showFloor();
+        myGamePiece.update();
+        myGamePiece.isJumping();
     }
-     
+
 }
 
 function everyinterval(n) {

@@ -2,36 +2,43 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
-        canvas {
-            border: 1px solid #d3d3d3;
-            background-color: #f1f1f1;
-        }
-    </style>
+    <link rel="stylesheet" href="~/Content/GameStyle.css">
+    @*<style>
+
+            canvas {
+                border: 1px solid #d3d3d3;
+                background-color: #f1f1f1;
+            }
+        </style>*@
 </head>
-<body onload="startGame()">
-    <div class="container">
+
+<body class="wholeScreen" onload="startGame()">
+    <div class="container wholeScreen">
         <div class="row">
             <div class="col-sm-12 col-md-12 col-lg-12" style="padding-top:15px;">
-                <div id="gameArea"></div>
+                <div class="text-center border" id="gameOver" style="position:absolute; left:45%;top:45%; display:none;">
+                    <p>Game Over</p>
+                    <button onmousedown="myGameArea.startOver()">Retry?</button>
+                    <button onmousedown="">Quit</button>
+                </div>
+                <div id="gameArea">
+                    <canvas id="canvas" style="width:100%;height:100%;"></canvas>
+                </div>
             </div>
         </div>
     </div>
-    <div class="hidden" id="gameOver">
-        <p>Game Over</p>
-        <button onmousedown="myGameArea.startOver()">Retry?</button>
-        <button onmousedown="">Quit</button>
-    </div>
-    <div class="hidden">
+
+    <div class="hide" style="display:none;">
         <img id="bird" src="~/Img/Flappy1.png" />
+        <img id="bird2" src="~/Img/Flappy2.png" />
         <img id="pipe1" src="~/Img/Pipe3_trans.png" />
-        <img id="pipe2" src="~/Img/Pipe4_trans .png"/>
+        <img id="pipe2" src="~/Img/Pipe4_trans .png" />
         <img id="backgroundImg" src="~/Img/BG2.png" />
         <img id="floorImg" src="~/Img/Floor1.png" />
     </div>
     <script src="~/Scripts/Flap/GameScript.js"></script>
     <br>
-    <button onmousedown="accelerate(-0.2)" onmouseup="accelerate(0.05)">ACCELERATE</button>
+    @*<button onmousedown="accelerate(-0.2)" onmouseup="accelerate(0.05)">ACCELERATE</button>*@
 
     <!-- <p>Use the ACCELERATE button to stay in the air</p>
     <p>How long can you stay alive?</p> -->
